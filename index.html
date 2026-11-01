@@ -1,950 +1,204 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyShop - Luxury E-commerce</title>
-<link rel="icon" type="image/png" href="immagini/logo.png">
-<style>
-  :root {
-    --ink: #211d19;
-    --muted: #81776c;
-    --ivory: #f7f4ee;
-    --paper: #fffdf9;
-    --gold: #ad8954;
-    --gold-light: #d7bd8c;
-    --line: #e8e0d4;
-    --shadow: 0 18px 45px rgba(45, 35, 22, .08);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; scroll-padding-top: 120px; }
-  body {
-    background: var(--ivory);
-    color: var(--ink);
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 400;
-    letter-spacing: .01em;
-    -webkit-font-smoothing: antialiased;
-  }
-  button, a { -webkit-tap-highlight-color: transparent; }
-  button { font: inherit; }
-  header {
-    background: rgba(255,253,249,.96);
-    border-bottom: 1px solid var(--line);
-    box-shadow: 0 5px 24px rgba(40,30,18,.035);
-    position: sticky; top: 0; z-index: 100;
-    backdrop-filter: blur(16px);
-  }
-  .navbar {
-    max-width: 1320px; margin: 0 auto; display: flex; align-items: center;
-    justify-content: space-between; padding: 1.25rem 2rem;
-  }
-  .logo {
-    display: inline-flex; align-items: center; gap: .55rem;
-    font-family: Georgia, "Times New Roman", serif; font-size: 1.65rem;
-    font-weight: 500; letter-spacing: .11em; color: var(--ink); cursor: pointer;
-    text-transform: uppercase;
-  }
-  .logo img {
-    display: block; width: 34px; height: 34px; object-fit: contain; flex-shrink: 0;
-  }
-  .logo span { color: var(--gold); }
-  nav ul { display: flex; list-style: none; gap: 2.8rem; }
-  nav a {
-    text-decoration: none; color: var(--ink); font-size: .75rem;
-    text-transform: uppercase; letter-spacing: .16em; transition: color .25s;
-  }
-  nav a:hover { color: var(--gold); }
-  .cart-btn, .hero button, .add-btn, .modal-add-btn, .checkout-btn {
-    background: var(--ink); color: var(--paper); border: 1px solid var(--ink);
-    border-radius: 0; cursor: pointer; transition: background .25s, color .25s, border-color .25s;
-  }
-  .cart-btn {
-    padding: .8rem 1.15rem; display: flex; align-items: center; gap: .65rem;
-    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
-  }
-  .cart-btn:hover, .hero button:hover, .add-btn:hover, .modal-add-btn:hover, .checkout-btn:hover {
-    background: var(--gold); border-color: var(--gold); color: #fff;
-  }
-  .cart-count {
-    background: var(--gold); color: white; border-radius: 50%; width: 21px; height: 21px;
-    display: inline-flex; align-items: center; justify-content: center; font-size: .7rem;
-  }
-  .hero {
-    color: var(--paper); text-align: center; padding: clamp(5rem, 11vw, 9.5rem) 1.5rem;
-    background: linear-gradient(110deg, rgba(20,18,16,.78), rgba(44,35,26,.55)),
-      radial-gradient(ellipse at 50% 10%, #76644f 0%, #29231d 54%, #171513 100%);
-    position: relative; overflow: hidden;
-  }
-  .hero:before, .hero:after {
-    content: ""; position: absolute; left: 50%; transform: translateX(-50%); width: 64px; height: 1px;
-    background: var(--gold-light);
-  }
-  .hero:before { top: 2.5rem; }
-  .hero:after { bottom: 2.5rem; }
-  .hero h1 {
-    font-family: Georgia, "Times New Roman", serif; font-weight: 400;
-    font-size: clamp(2.25rem, 5vw, 4.2rem); line-height: 1.12;
-    letter-spacing: .015em; margin-bottom: 1.3rem;
-  }
-  .hero p { color: #e0d7ca; font-size: .85rem; letter-spacing: .09em; margin-bottom: 2rem; }
-  .hero button {
-    padding: 1rem 2.2rem; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
-    border-color: var(--gold); background: var(--gold);
-  }
-  .categories-bar {
-    background: rgba(255,253,249,.97); border-bottom: 1px solid var(--line);
-    padding: 1rem 1.5rem; position: sticky; top: 76px; z-index: 90;
-  }
-  .categories-list {
-    max-width: 1320px; margin: 0 auto; display: flex; gap: .7rem; overflow-x: auto;
-    padding-bottom: .25rem; scrollbar-width: thin;
-  }
-  .categories-list::-webkit-scrollbar { height: 3px; }
-  .categories-list::-webkit-scrollbar-thumb { background: var(--gold-light); }
-  .category-btn {
-    background: transparent; color: var(--muted); border: 1px solid transparent;
-    padding: .7rem 1.15rem; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
-    cursor: pointer; white-space: nowrap; transition: all .25s; display: flex; align-items: center; gap: .55rem;
-  }
-  .category-btn:hover { color: var(--ink); border-color: var(--line); }
-  .category-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-  .category-btn .count { color: var(--gold-light); font-size: .68rem; }
-  .container { max-width: 1320px; margin: 0 auto; padding: 4.5rem 2rem 6rem; }
-  .section-header {
-    display: flex; align-items: end; justify-content: space-between; margin-bottom: 2.5rem;
-    flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 1.3rem;
-  }
-  .section-title {
-    font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.8rem, 3vw, 2.6rem);
-    font-weight: 400; color: var(--ink); letter-spacing: -.015em;
-  }
-  .section-title span { color: var(--gold); }
-  .see-all-btn {
-    background: transparent; border: 1px solid var(--gold); color: var(--ink);
-    padding: .75rem 1.15rem; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
-    cursor: pointer; transition: all .25s;
-  }
-  .see-all-btn:hover { background: var(--gold); color: white; }
-  .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem 1.35rem; }
-  .product-card {
-    background: var(--paper); border: 1px solid rgba(173,137,84,.12); overflow: hidden;
-    box-shadow: 0 3px 15px rgba(40,30,18,.025); transition: transform .35s, box-shadow .35s;
-    display: flex; flex-direction: column;
-  }
-  .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-  .product-img { height: 330px; overflow: hidden; background: #eee8de; position: relative; }
-  .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2,.7,.2,1); }
-  .product-card:hover .product-img img { transform: scale(1.045); }
-  .product-badge {
-    position: absolute; top: 14px; left: 14px; background: var(--paper); color: var(--gold);
-    padding: .5rem .7rem; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase;
-    border: 1px solid var(--gold-light);
-  }
-  .product-info { padding: 1.35rem 1.25rem 1.25rem; display: flex; flex-direction: column; flex-grow: 1; }
-  .product-category, .modal-category {
-    font-size: .65rem; color: var(--gold); font-weight: 600; text-transform: uppercase;
-    letter-spacing: .17em; margin-bottom: .65rem;
-  }
-  .product-info h3 {
-    font-family: Georgia, "Times New Roman", serif; font-size: 1.2rem; font-weight: 400;
-    margin-bottom: .6rem; color: var(--ink);
-  }
-  .product-info p { font-size: .86rem; line-height: 1.7; color: var(--muted); margin-bottom: 1.2rem; flex-grow: 1; }
-  .product-price { font-family: Georgia, "Times New Roman", serif; font-size: 1.35rem; color: var(--ink); margin-bottom: 1.1rem; }
-  .add-btn { padding: .9rem; width: 100%; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; }
-  .no-products { text-align: center; padding: 3rem; color: var(--muted); font-size: 1rem; grid-column: 1 / -1; }
-  .cart-sidebar {
-    position: fixed; top: 0; right: -420px; width: 400px; max-width: 92%; height: 100%;
-    background: var(--paper); box-shadow: -15px 0 45px rgba(0,0,0,.12);
-    transition: right .35s ease; z-index: 200; display: flex; flex-direction: column;
-  }
-  .cart-sidebar.open { right: 0; }
-  .cart-header { padding: 1.5rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-  .cart-header h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 1.5rem; }
-  .close-btn { background: none; border: none; font-size: 1.35rem; cursor: pointer; color: var(--muted); }
-  .cart-items { flex-grow: 1; overflow-y: auto; padding: 1.2rem 1.5rem; }
-  .cart-item { display: flex; gap: .9rem; padding: 1rem 0; border-bottom: 1px solid var(--line); align-items: center; }
-  .cart-item-img { width: 66px; height: 72px; overflow: hidden; flex-shrink: 0; background: #eee8de; }
-  .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
-  .cart-item-info { flex-grow: 1; }
-  .cart-item-info h4 { font-family: Georgia, "Times New Roman", serif; font-size: 1rem; font-weight: 400; margin-bottom: .35rem; }
-  .cart-item-info .price { color: var(--gold); font-size: .9rem; }
-  .qty-controls { display: flex; align-items: center; gap: .6rem; margin-top: .5rem; }
-  .qty-btn { background: var(--ivory); border: 1px solid var(--line); width: 27px; height: 27px; cursor: pointer; color: var(--ink); transition: all .2s; }
-  .qty-btn:hover { background: var(--ink); color: white; }
-  .qty-value { min-width: 20px; text-align: center; font-size: .9rem; }
-  .remove-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: .3rem; }
-  .remove-btn:hover { color: #8b3e32; }
-  .cart-footer { padding: 1.5rem; border-top: 1px solid var(--line); }
-  .cart-total { display: flex; justify-content: space-between; font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; margin-bottom: 1rem; }
-  .checkout-btn { width: 100%; padding: 1rem; font-size: .7rem; letter-spacing: .13em; text-transform: uppercase; }
-  .clear-cart-btn {
-    width: 100%; background: transparent; border: 1px solid var(--line); color: var(--muted);
-    padding: .75rem; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; margin-top: .6rem;
-  }
-  .clear-cart-btn:hover { border-color: var(--gold); color: var(--ink); }
-  .empty-cart { text-align: center; color: var(--muted); padding: 2.5rem 1rem; }
-  .overlay { display: none; position: fixed; inset: 0; background: rgba(22,18,14,.48); backdrop-filter: blur(2px); z-index: 150; }
-  .overlay.active { display: block; }
-  .toast {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-    background: var(--ink); color: white; padding: .9rem 1.5rem; font-size: .8rem;
-    letter-spacing: .04em; box-shadow: var(--shadow); opacity: 0; transition: all .3s ease; z-index: 300; pointer-events: none;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-  .product-modal { display: none; position: fixed; inset: 0; z-index: 250; align-items: center; justify-content: center; padding: 1.5rem; }
-  .product-modal.active { display: flex; }
-  .product-modal-overlay { position: absolute; inset: 0; background: rgba(20,17,14,.72); backdrop-filter: blur(5px); }
-  .product-modal-content {
-    position: relative; background: var(--paper); max-width: 940px; width: 100%; max-height: 90vh;
-    overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr;
-    box-shadow: 0 25px 80px rgba(0,0,0,.28); animation: modalIn .3s ease;
-  }
-  @keyframes modalIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .product-modal-close {
-    position: absolute; top: 14px; right: 14px; background: var(--paper); border: 1px solid var(--line);
-    width: 38px; height: 38px; font-size: 1.15rem; cursor: pointer; z-index: 2; color: var(--ink);
-  }
-  .product-modal-close:hover { background: var(--ink); color: white; }
-  .modal-img { background: #eee8de; overflow: hidden; min-height: 420px; }
-  .modal-img img { width: 100%; height: 100%; object-fit: cover; }
-  .modal-info { padding: clamp(1.5rem, 4vw, 3.2rem); display: flex; flex-direction: column; justify-content: center; }
-  .modal-info h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: clamp(1.6rem, 3vw, 2.25rem); color: var(--ink); margin-bottom: 1rem; }
-  .modal-desc { color: var(--muted); font-size: .9rem; line-height: 1.8; margin-bottom: 1.8rem; }
-  .modal-price { font-family: Georgia, "Times New Roman", serif; font-size: 2rem; color: var(--ink); margin-bottom: 1.5rem; transition: color .2s; }
-  .modal-price.updated { animation: priceFlash .4s ease; }
-  @keyframes priceFlash { 0%,100% { transform: scale(1); } 50% { transform: scale(1.035); color: var(--gold); } }
-  .modal-unit-price { display: block; font-family: Arial, sans-serif; font-size: .78rem; color: var(--muted); margin-top: .3rem; }
-  .modal-qty { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-  .modal-qty label { font-size: .8rem; color: var(--muted); }
-  .modal-qty .qty-controls { margin-top: 0; }
-  .modal-qty .qty-btn { width: 36px; height: 36px; font-size: 1.05rem; }
-  .modal-qty .qty-value { font-size: 1rem; min-width: 30px; }
-  .modal-add-btn { padding: 1rem; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; width: 100%; }
-  .modal-badge { display: inline-block; border: 1px solid var(--gold-light); color: var(--gold); padding: .45rem .7rem; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 1rem; align-self: flex-start; }
-  .product-card .product-img, .product-card h3 { cursor: pointer; }
-  footer { background: #201c17; padding: 2.5rem 1.5rem; border-top: 1px solid rgba(215,189,140,.35); }
-  .footer-social { max-width: 1320px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: .8rem; flex-wrap: wrap; }
-  .footer-social a {
-    display: flex; align-items: center; justify-content: center; width: 46px; height: 46px;
-    border: 1px solid rgba(215,189,140,.3); border-radius: 50%; color: #d7bd8c; text-decoration: none; transition: all .25s;
-  }
-  .footer-social a:hover { transform: translateY(-3px); color: white; border-color: var(--gold-light); background: rgba(215,189,140,.12); }
-  .footer-social a svg { width: 20px; height: 20px; fill: currentColor; }
-  @media (max-width: 768px) {
-    .navbar { padding: 1rem 1.1rem; }
-    nav ul { display: none; }
-    .hero h1 { font-size: 2.35rem; }
-    .container { padding: 3rem 1.1rem 4rem; }
-    .section-title { font-size: 1.8rem; }
-    .categories-bar { top: 64px; }
-    .products { gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); }
-    .product-img { height: 245px; }
-    .product-info { padding: 1rem; }
-    .product-info h3 { font-size: 1.05rem; }
-  }
-  @media (max-width: 700px) {
-    .product-modal-content { grid-template-columns: 1fr; max-width: 480px; }
-    .modal-img { min-height: 260px; max-height: 42vh; }
-    .modal-info { padding: 1.5rem; }
-    .modal-info h2 { font-size: 1.65rem; }
-    .modal-price { font-size: 1.7rem; }
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  /* Animazione d'ingresso della pagina */
-  body.is-loaded header {
-    animation: luxuryDrop .85s cubic-bezier(.2,.7,.2,1) both;
-  }
-  body.is-loaded .hero h1,
-  body.is-loaded .hero p,
-  body.is-loaded .hero button {
-    animation: luxuryRise .9s cubic-bezier(.2,.7,.2,1) both;
-  }
-  body.is-loaded .hero p { animation-delay: .12s; }
-  body.is-loaded .hero button { animation-delay: .22s; }
-  @keyframes luxuryDrop {
-    from { opacity: 0; transform: translateY(-12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes luxuryRise {
-    from { opacity: 0; transform: translateY(22px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  <title>Manutenzione in corso</title>
 
-  /* I prodotti entrano gradualmente mentre si scorre */
-  .product-card {
-    opacity: 0;
-    transform: translateY(26px);
-    transition:
-      opacity .7s cubic-bezier(.2,.7,.2,1),
-      transform .7s cubic-bezier(.2,.7,.2,1),
-      box-shadow .35s ease;
-    will-change: opacity, transform;
-  }
-  .product-card.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: .01ms !important;
-      animation-iteration-count: 1 !important;
-      scroll-behavior: auto !important;
-      transition-duration: .01ms !important;
+  <!-- FAVICON: LOGO NELLA SCHEDA DEL BROWSER -->
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <style>
+    :root {
+      --ivory: #f7f4ee;
+      --paper: #fffdf9;
+      --ink: #211d19;
+      --gold: #ad8954;
+      --gold-light: #d7bd8c;
     }
-    .product-card { opacity: 1; transform: none; }
-  }
 
-</style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--ivory);
+      color: var(--ink);
+      font-family: Helvetica, Arial, sans-serif;
+      text-align: center;
+      padding: 25px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      padding: 60px 35px;
+      background: var(--paper);
+      border: 1px solid rgba(173, 137, 84, 0.25);
+      box-shadow: 0 15px 50px rgba(33, 29, 25, 0.06);
+      animation: fadeIn 1s ease;
+    }
+
+    .logo {
+      width: 130px;
+      max-height: 110px;
+      object-fit: contain;
+      margin-bottom: 35px;
+    }
+
+    .line {
+      width: 55px;
+      height: 1px;
+      background: var(--gold);
+      margin: 0 auto 30px;
+    }
+
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(30px, 6vw, 42px);
+      font-weight: normal;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .description {
+      color: #777067;
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 400px;
+      margin: 0 auto 35px;
+    }
+
+    .timer-label {
+      color: var(--gold);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    #timer {
+      font-family: Georgia, serif;
+      font-size: 48px;
+      color: var(--ink);
+      letter-spacing: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-notice {
+      max-width: 390px;
+      margin: 18px auto 0;
+      color: #8b8378;
+      font-size: 12px;
+      line-height: 1.8;
+      font-style: italic;
+    }
+
+    .footer {
+      margin-top: 40px;
+      color: #a39b90;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 45px 22px;
+      }
+
+      #timer {
+        font-size: 40px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- HEADER -->
-<header>
-  <div class="navbar">
-    <div class="logo" onclick="showHome()"><img src="immagini/logo.png" alt="">My<span>Shop</span></div>
-    <nav>
-      <ul>
-        <li><a href="#" onclick="showHome(); return false;">Home</a></li>
-        <li><a href="#prodotti">Prodotti</a></li>
-      </ul>
-    </nav>
-    <button class="cart-btn" onclick="toggleCart()">
-      🛒 Carrello <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </div>
-</header>
+  <main class="container">
 
-<!-- HERO -->
-<section class="hero">
-  <h1>Scopri le Migliori Offerte</h1>
-  <p>Spedizione gratuita per ordini superiori a 50€</p>
-  <button onclick="document.getElementById('prodotti').scrollIntoView({behavior:'smooth'})">
-    Acquista Ora
-  </button>
-</section>
+    <!-- LOGO CENTRALE -->
+    <img src="logo.png" alt="Logo" class="logo">
 
-<!-- BARRA CATEGORIE -->
-<div class="categories-bar">
-  <div class="categories-list" id="categoriesList"></div>
-</div>
+    <div class="line"></div>
 
-<!-- PRODOTTI -->
-<main class="container" id="prodotti">
-  <div class="section-header">
-    <h2 class="section-title" id="sectionTitle">I Nostri <span>Prodotti</span></h2>
-    <button class="see-all-btn" id="seeAllBtn" onclick="showHome()" style="display:none;">← Torna alla Home</button>
-  </div>
-  <div class="products" id="productList"></div>
-</main>
+    <h1>Stiamo tornando.</h1>
 
-<!-- CARRELLO -->
-<aside class="cart-sidebar" id="cartSidebar">
-  <div class="cart-header">
-    <h2>Il Tuo Carrello</h2>
-    <button class="close-btn" onclick="toggleCart()">✕</button>
-  </div>
-  <div class="cart-items" id="cartItems">
-    <p class="empty-cart">Il carrello è vuoto 🛍️</p>
-  </div>
-  <div class="cart-footer">
-    <div class="cart-total">
-      <span>Totale:</span>
-      <span id="cartTotal">€0,00</span>
+    <p class="description">
+      Stiamo lavorando per offrirti un'esperienza ancora migliore.
+      Il nostro sito è temporaneamente in manutenzione.
+      Ti ringraziamo per la pazienza.
+    </p>
+
+    <div class="timer-label">Tempo stimato</div>
+
+    <div id="timer">15:00</div>
+
+    <p class="timer-notice">
+      Il tempo indicato è puramente orientativo.
+      La manutenzione potrebbe terminare prima
+      oppure richiedere più tempo. Ti ringraziamo per la pazienza.
+    </p>
+
+    <div class="footer">
+      Torneremo presto online
     </div>
-    <button class="checkout-btn" onclick="checkout()">Procedi all'Acquisto</button>
-    <button class="clear-cart-btn" onclick="clearCart()">Svuota Carrello</button>
-  </div>
-</aside>
 
-<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+  </main>
 
-<!-- MODAL PRODOTTO -->
-<div class="product-modal" id="productModal">
-  <div class="product-modal-overlay" onclick="closeProductModal()"></div>
-  <div class="product-modal-content">
-    <button class="product-modal-close" onclick="closeProductModal()">✕</button>
-    <div class="modal-img">
-      <img id="modalImg" src="" alt="">
-    </div>
-    <div class="modal-info">
-      <div id="modalBadge"></div>
-      <div class="modal-category" id="modalCategory"></div>
-      <h2 id="modalName"></h2>
-      <p class="modal-desc" id="modalDesc"></p>
-      <div class="modal-price" id="modalPriceContainer">
-        <span id="modalPrice">€0,00</span>
-        <small class="modal-unit-price" id="modalUnitPrice"></small>
-      </div>
-      <div class="modal-qty">
-        <label>Quantità:</label>
-        <div class="qty-controls">
-          <button class="qty-btn" onclick="changeModalQty(-1)">−</button>
-          <span class="qty-value" id="modalQtyValue">1</span>
-          <button class="qty-btn" onclick="changeModalQty(1)">+</button>
-        </div>
-      </div>
-      <button class="modal-add-btn" onclick="addFromModal()">🛒 Aggiungi al Carrello</button>
-    </div>
-  </div>
-</div>
+  <script>
+    const DURATION = 15 * 60 * 1000;
+    const STORAGE_KEY = "maintenanceEndTime";
 
-<!-- TOAST -->
-<div class="toast" id="toast">Prodotto aggiunto al carrello ✓</div>
+    let endTime = localStorage.getItem(STORAGE_KEY);
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-social">
-    <a href="https://www.instagram.com/myshop_luxury_ecommerce/" target="_blank" rel="noopener" class="instagram" aria-label="Instagram" title="Instagram">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-      </svg>
-    </a>
-    <a href="https://www.youtube.com/@MyShopLUXURYE-COMMERCE" target="_blank" rel="noopener" class="youtube" aria-label="YouTube" title="YouTube">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-      </svg>
-    </a>
-  </div>
-</footer>
+    if (!endTime || Number(endTime) <= Date.now()) {
+      endTime = Date.now() + DURATION;
+      localStorage.setItem(STORAGE_KEY, endTime);
+    }
 
-<script>
-  /* ============================================
-     CONFIGURAZIONE
-     ============================================ */
-  const CART_STORAGE_KEY = 'myshop_cart_v1';
-  const PRODUCTS_PER_CATEGORY_HOME = 4;
-
-  /* ============================================
-     CATEGORIE
-     ============================================ */
-  const categories = [
-    { id: 'all',              	   name: 'Tutti',           	emoji: '' },
-    { id: 'roblox',           	   name: 'Roblox',          	emoji: '' },
-    { id: 'louis vuitton',    	   name: 'Louis Vuitton',   	emoji: '' },
-	{ id: 'vestiti', 		  	   name: 'Vestiti', 		   	emoji: '' },
-	{ id: 'servizi', 		  	   name: 'Servizi', 		   	emoji: ''},
-	{ id: 'e-mail', 		  	   name: 'E-mail', 	    		emoji: ''},
-	{ id: 'prestiti bancari', 	   name: 'Prestiti bancari', 	emoji: ''},
-	{ id: 'elettronica', 		   name: 'Elettronica', 		emoji: ''},
-	{ id: 'bibite', 			   name: 'Bibite', 				emoji: ''}
-  ];
-
-  /* ============================================
-     PRODOTTI
-     ============================================ */
-  const products = [
-    /* ===== ROBLOX ===== */
-    { id: 1, name: "SoftieCloud470", desc:'per maggiori informazioni clicca <a href="https://shorturl.at/UsJSI">qui</a>', 	price: 3.04, 	 category: "roblox",   	 badge: "Novità", 	image: "immagini/account roblox/SoftieCloud470.webp" },
-	{ id: 2, name: "PeachyDreams125", 		desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/Q6Ale">qui</a>', 	price: 0.68, category: "roblox", 		badge: "Novità", 	image: "immagini/account roblox/PeachyDreams125.webp" },
-	{ id: 3, name: "600 robux", 		desc: "", 		price: 5.00, 		 category: "roblox", 			 badge: "", 	image: "immagini/robux/1.png" },
-	{ id: 4, name: "1.100 robux", 		desc: "", 		price: 10.00, 		 category: "roblox", 			 badge: "", 	image: "immagini/robux/1.png" },
-	{ id: 5, name: "1.600 robux", 		desc: "", 		price: 15.00, 		 category: "roblox", 			 badge: "", 	image: "immagini/robux/1.png" },
-	{ id: 6, name: "2.100 robux", 		desc: "", 		price: 20.00, 		 category: "roblox", 			 badge: "", 	image: "immagini/robux/1.png" },
-	{ id: 7, name: "3.725 robux", 		desc: "", 		price: 35.00, 		 category: "roblox", 			 badge: "", 	image: "immagini/robux/1.png" },
-	{ id: 8, name: "5.350 robux",		desc: "", 		price: 48.00, 		 category: "roblox", 			 badge: "", 	image: "immagini/robux/1.png" },
-	{ id: 9, name: "11.100 robux", 		desc: "", 		price: 100.00, 		 category: "roblox", 			 badge: "", 	image: "immagini/robux/1.png" },
-	{ id: 10, name: "24.100 robux", 	desc: "", 		price: 200.00, 		 category: "roblox", 			 badge: "", 	image: "immagini/robux/1.png" },
-
-    /* ===== LOUIS VUITTON ===== */
-    { id: 11, name: "Alma BB",                desc: "", 		price: 1650.00, 	 category: "louis vuitton", 	 badge: "", 	image: "immagini/borse/1.avif" },
-    { id: 12, name: "Borsa Again",            desc: "", 		price: 2550.00, 	 category: "louis vuitton", 	 badge: "", 	image: "immagini/borse/2.avif" },
-    { id: 13, name: "Borsa Vanity PM",        desc: "", 		price: 2550.00, 	 category: "louis vuitton",  	 badge: "", 	image: "immagini/borse/3.avif" },
-    { id: 14, name: "Borsa Multipass",        desc: "", 		price: 2250.00, 	 category: "louis vuitton", 	 badge: "", 	image: "immagini/borse/4.avif" },
-    { id: 15, name: "Speedy Bandoulière 30",  desc: "", 		price: 1700.00, 	 category: "louis vuitton", 	 badge: "", 	image: "immagini/borse/5.avif" },
-    { id: 16, name: "Borsa Multipass Mini",   desc: "", 		price: 1800.00, 	 category: "louis vuitton", 	 badge: "", 	image: "immagini/borse/6.avif" },
-    { id: 17, name: "Nano Speedy",            desc: "", 		price: 1650.00, 	 category: "louis vuitton", 	 badge: "", 	image: "immagini/borse/7.avif" },
-    { id: 18, name: "Neverfull GM",           desc: "", 		price: 1600.00, 	 category: "louis vuitton", 	 badge: "", 	image: "immagini/borse/8.avif" },
-	{ id: 19, name: "Cintura LV Initiales Monogram", 				desc: "", 		price: 500.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/cinture/1.avif" },
-	{ id: 20, name: "Cintura LV Initiales", 						desc: "", 		price: 500.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/cinture/2.avif" },
-	{ id: 21, name: "Cintura LV Initiales Nero Opaco", 				desc: "", 		price: 475.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/cinture/3.avif" },
-	{ id: 22, name: "Cintura Pont Neuf Monogram", 					desc: "", 		price: 420.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/cinture/4.avif" },
-	{ id: 23, name: "Cintura LV Initiales", 						desc: "", 		price: 480.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/cinture/5.avif" },
-	{ id: 24, name: "Cintura LV Initiales Monogram Midnight", 		desc: "", 		price: 500.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/cinture/6.avif" },
-	{ id: 25, name: "Cintura LV Dimension", 						desc: "", 		price: 500.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/cinture/7.avif" },
-	{ id: 26, name: "LV Initiales", 								desc: "", 		price: 500.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/cinture/8.avif" },
-	{ id: 27, name: "Portafoglio Brazza", 					desc: "", 		price: 600.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/portafogli/1.avif" },
-	{ id: 28, name: "Portafoglio Sarah", 					desc: "", 		price: 570.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/portafogli/2.avif" },
-	{ id: 29, name: "Portafoglio Victorine", 				desc: "", 		price: 465.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/portafogli/3.avif" },
-	{ id: 30, name: "Portafoglio Emilie", 					desc: "", 		price: 490.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/portafogli/4.avif" },
-	{ id: 31, name: "Portafoglio Zippy", 					desc: "", 		price: 680.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/portafogli/5.avif" },
-	{ id: 32, name: "Portafoglio Lisa", 					desc: "", 		price: 435.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/portafogli/6.avif" },
-	{ id: 33, name: "Portafoglio piccolo LV Charms", 		desc: "", 		price: 475.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/portafogli/7.avif" },
-	{ id: 34, name: "Portafoglio Clémence", 				desc: "", 		price: 500.00, 		category: "louis vuitton", 		badge: "", 		image: "immagini/portafogli/8.avif" },
-	
-	/* ==== VESTITI ==== */
-	{ id: 35, name: "4 PACK Calze multi", 											desc: "", 		price: 12.00, 		category: "vestiti", 		badge: "", 		image: "immagini/calzini/1.webp" },
-	{ id: 36, name: "7 PACK Calze pink, green and navy blue", 						desc: "", 		price: 16.00, 		category: "vestiti", 		badge: "", 		image: "immagini/calzini/2.webp" },
-	{ id: 37, name: "5 PACK Calze light blue/white/pink", 							desc: "", 		price: 14.00, 		category: "vestiti", 		badge: "", 		image: "immagini/calzini/3.webp" },
-	{ id: 38, name: "UNISEX 10 PACK Calze light blue/dark blue/blue", 				desc: "", 		price: 20.00, 		category: "vestiti", 		badge: "", 		image: "immagini/calzini/4.webp" },
-	{ id: 39, name: "3 PACK Collant pink cream and dark grey", 						desc: "", 		price: 17.00, 		category: "vestiti", 		badge: "", 		image: "immagini/calzini/5.webp" },
-	{ id: 40, name: "5 PACK Calze multi", 											desc: "", 		price: 12.00, 		category: "vestiti", 		badge: "", 		image: "immagini/calzini/6.webp" },
-	{ id: 41, name: "7 PACK Calze white/light pink/yellow", 						desc: "", 		price: 15.00, 		category: "vestiti", 		badge: "", 		image: "immagini/calzini/7.webp" },
-	{ id: 42, name: "RICH STRIPE AND SPOT ANLKE 5 PACK Calze multi colour", 		desc: "", 		price: 14.00, 		category: "vestiti", 		badge: "", 		image: "immagini/calzini/8.webp" },
-	{ id: 43, name: "PATTERN BRIEFS 5 PACK - Slip - pink polka dots", 			desc: "", 		price: 11.00, 		category: "vestiti", 		badge: "", 		image: "immagini/mutande/1.webp" },
-	{ id: 44, name: "5 PACK - Boxer aderenti - safari animals", 				desc: "", 		price: 24.00, 		category: "vestiti", 		badge: "", 		image: "immagini/mutande/2.webp" },
-	{ id: 45, name: "REGULAR FIT HIPSTERS BRIEFS 7 PACK Slip pink cream", 		desc: "", 		price: 19.00, 		category: "vestiti", 		badge: "", 		image: "immagini/mutande/3.webp" },
-	{ id: 46, name: "MULTIPACK - Hipster - salmon pink", 						desc: "", 		price: 20.00, 		category: "vestiti", 		badge: "", 		image: "immagini/mutande/4.webp" },
-	{ id: 47, name: "MULTIPACK - Hipster - salmon pink", 						desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/mutande/5.webp" },
-	{ id: 48, name: "10 PACK Boxer aderenti lunghi mottled light", 				desc: "", 		price: 29.00, 		category: "vestiti", 		badge: "", 		image: "immagini/mutande/6.webp" },
-	{ id: 49, name: "5 PACK - Hipster - light blue/mauve/white", 				desc: "", 		price: 20.00, 		category: "vestiti", 		badge: "", 		image: "immagini/mutande/7.webp" },
-	{ id: 50, name: "7 PACK - Slip - light pink/light blue/purple", 			desc: "", 		price: 22.00, 		category: "vestiti", 		badge: "", 		image: "immagini/mutande/8.webp" },
-	{ id: 51, name: "Lacoste CORE TEE UNISEX - T-shirt basic", 		desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/magliette/1.webp" },
-	{ id: 52, name: "Lacoste CORE TEE UNISEX - T-shirt basic", 		desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/magliette/2.webp" },
-	{ id: 53, name: "Lacoste CORE TEE UNISEX - T-shirt basic", 		desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/magliette/3.webp" },
-	{ id: 54, name: "Lacoste CORE TEE UNISEX - T-shirt basic", 		desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/magliette/4.webp" },
-	{ id: 55, name: "Lacoste CORE TEE UNISEX - T-shirt basic", 		desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/magliette/5.webp" },
-	{ id: 56, name: "Lacoste CORE TEE UNISEX - T-shirt basic", 		desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/magliette/6.webp" },
-	{ id: 57, name: "Lacoste CORE TEE UNISEX - T-shirt basic", 		desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/magliette/7.webp" },
-	{ id: 58, name: "Lacoste CORE TEE UNISEX - T-shirt basic", 		desc: "", 		price: 30.00, 		category: "vestiti", 		badge: "", 		image: "immagini/magliette/8.webp" },
-	{ id: 59, name: "Nike Air Force 1 '07", 			desc: "", 		price: 135.00, 		category: "vestiti", 		badge: "", 		image: "immagini/scarpe/1.avif" },
-	{ id: 60, name: "Nike Air Force 1 '07", 			desc: "", 		price: 135.00, 		category: "vestiti", 		badge: "", 		image: "immagini/scarpe/2.avif" },
-	{ id: 61, name: "Nike Air Force 1 '07 LV8", 		desc: "", 		price: 135.00, 		category: "vestiti", 		badge: "", 		image: "immagini/scarpe/3.avif" },
-	{ id: 62, name: "Nike Air Force 1 Low By You",  	desc: "", 		price: 170.00, 		category: "vestiti", 		badge: "", 		image: "immagini/scarpe/4.avif" },
-	
-	/* ==== SERVIZI ==== */
-	{ id: 63, 	 name: "Clonazione account Instagram", 		desc: "", 		price: 650.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/instagram.avif" },
-	{ id: 64, 	 name: "10 follower Instagram", 			desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/pmiNW">qui</a>', 		price: 10.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/instagram.avif" },
-	{ id: 65, 	 name: "20 follower Instagram", 			desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/pmiNW">qui</a>', 		price: 20.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/instagram.avif" },
-	{ id: 66, 	 name: "30 follower Instagram", 			desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/pmiNW">qui</a>', 		price: 30.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/instagram.avif" },
-	{ id: 67, 	 name: "Clonazione account Tik Tok", 		desc: "", 		price: 650.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/tik tok.jpg" },
-	{ id: 68, 	 name: "10 follower Tik Tok", 				desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/YQIda">qui</a>', 		price: 10.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/tik tok.jpg" },
-	{ id: 69, 	 name: "20 follower Tik Tok", 				desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/YQIda">qui</a>', 		price: 20.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/tik tok.jpg" },
-	{ id: 70, 	 name: "30 follower Tik Tok", 				desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/YQIda">qui</a>', 		price: 30.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/tik tok.jpg" },
-	{ id: 71, 	 name: "1 account Roblox personalizzato", 	desc: "", 		price: 25.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/roblox.jpg" },
-	{ id: 72, 	 name: "2 account Roblox personalizzati", 	desc: "", 		price: 50.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/roblox.jpg" },
-	{ id: 73, 	 name: "3 account Roblox personalizzati", 	desc: "", 		price: 75.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/roblox.jpg" },
-	{ id: 74, 	 name: "4 account Roblox personalizzati", 	desc: "", 		price: 100.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/roblox.jpg" },
-	{ id: 75, 	 name: "10 ID player Roblox attivi", 		desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/X4SpC">qui</a>', 		price: 15.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/roblox.jpg" },
-	{ id: 76, 	 name: "Video editing", 					desc: "", 		price: 35.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/capcut.jpg" },
-	{ id: 77, 	 name: "Investimenti monitorati", 			desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/peAg8">qui</a>', 		price: 0.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/bitcoin.jpg" },
-	
-	/* ==== E-MAIL ==== */
-	{ id: 78, 	 name: "10 email gmail Massimo Rossi valide", 			desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/Tt5AP">qui</a>', 		price: 5.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	{ id: 79, 	 name: "20 email gmail Massimo Rossi valide", 			desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/1efKW">qui</a>', 		price: 10.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	{ id: 80, 	 name: "30 email gmail Massimo Rossi valide", 			desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/iZH5n">qui</a>', 		price: 15.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	{ id: 81, 	 name: "40 email gmail Massimo Rossi valide", 			desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/iK0pC">qui</a>', 		price: 20.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	{ id: 82, 	 name: "10 email gmail Alessandro Rossi valide", 		desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/sXQF5">qui</a>', 		price: 5.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	
-	/* ==== PRESTITI BANCARI ==== */
-	{ id: 83, 	 name: "Prestito bancario 1000 euro", 		desc: "", 		price: 100.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
-	{ id: 84, 	 name: "Prestito bancario 2000 euro", 		desc: "", 		price: 200.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
-	{ id: 85, 	 name: "Prestito bancario 3000 euro", 		desc: "", 		price: 300.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
-	{ id: 86, 	 name: "Prestito bancario 4000 euro", 		desc: "", 		price: 400.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
-	{ id: 87, 	 name: "Prestito bancario 5000 euro", 		desc: "", 		price: 500.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
-	{ id: 88, 	 name: "Prestito bancario 6000 euro", 		desc: "", 		price: 600.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
-	{ id: 89, 	 name: "Prestito bancario 7000 euro", 		desc: "", 		price: 700.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
-	{ id: 90, 	 name: "Prestito bancario 8000 euro", 		desc: "", 		price: 800.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
-	
-	/* ==== ELETTRONICA ==== */
-	{ id: 91, 	 name: "Gift Card Roblox 10 euro", 		desc: "", 		price: 10.00, 		category: "elettronica", 		badge: "", 		image: "immagini/gift card/roblox.jpg" },
-	{ id: 92, 	 name: "Gift Card Roblox 20 euro", 		desc: "", 		price: 20.00, 		category: "elettronica", 		badge: "", 		image: "immagini/gift card/roblox.jpg" },
-	{ id: 93, 	 name: "Gift Card Roblox 30 euro", 		desc: "", 		price: 30.00, 		category: "elettronica", 		badge: "", 		image: "immagini/gift card/roblox.jpg" },
-	{ id: 94, 	 name: "Gift Card Roblox 40 euro", 		desc: "", 		price: 40.00, 		category: "elettronica", 		badge: "", 		image: "immagini/gift card/roblox.jpg" },
-	{ id: 95, 	 name: "Gift Card Nike 25 euro", 		desc: "", 		price: 25.00, 		category: "elettronica", 		badge: "", 		image: "immagini/gift card/nike.jpg" },
-	{ id: 96, 	 name: "Gift Card Nike 50 euro", 		desc: "", 		price: 50.00, 		category: "elettronica", 		badge: "", 		image: "immagini/gift card/nike.jpg" },
-	{ id: 97, 	 name: "Gift Card Nike 75 euro", 		desc: "", 		price: 75.00, 		category: "elettronica", 		badge: "", 		image: "immagini/gift card/nike.jpg" },
-	{ id: 98, 	 name: "Gift Card Nike 100 euro", 		desc: "", 		price: 100.00, 		category: "elettronica", 		badge: "", 		image: "immagini/gift card/nike.jpg" },
-	
-	/* ==== BIBITE ==== */
-	{ id: 99, 	 name: "Terme di Crodo LemonSoda", 		desc: "330 ml", 		price: 1.30, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/lemonsoda.webp" },
-	{ id: 100, 	 name: "Terme di Crodo OranSoda", 		desc: "330 ml", 		price: 1.30, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/oransoda.webp" },
-	{ id: 101, 	 name: "Terme di Crodo Soda Mojito", 		desc: "330 ml", 		price: 1.30, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/mojito.webp" },
-	{ id: 102, 	 name: "Paulaner · Spezi", 		desc: "330 ml", 		price: 1.50, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/paulanear.webp" },
-	{ id: 103, 	 name: "Gazzosa moscato", 		desc: "275 ml", 		price: 1.35, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/gazzosa moscato.webp" },
-	{ id: 104, 	 name: "Gazzosa mandarino", 	desc: "275 ml", 		price: 1.35, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/gazzosa mandarino.webp" },
-	{ id: 105, 	 name: "Pepita Pompelmo", 		desc: "1.5L", 			price: 1.95, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/pepita.webp" },
-	{ id: 106, 	 name: "Fanta Mango", 			desc: "500 ml", 		price: 1.55, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta mango.webp" },
-	{ id: 107, 	 name: "Fanta Exotic", 			desc: "500 ml", 		price: 1.55, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta exotic.webp" },
-	{ id: 108, 	 name: "Fanta Orange", 			desc: "330 ml", 		price: 1.10, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta.webp" }
-	];
-
-  /* ============================================
-     STATO
-     ============================================ */
-  let cart = loadCartFromStorage();
-  let activeCategory = 'all';
-
-  /* ============================================
-     LOCALSTORAGE
-     ============================================ */
-  function loadCartFromStorage() {
-    try {
-      const stored = localStorage.getItem(CART_STORAGE_KEY);
-      if (!stored) return [];
-      const parsed = JSON.parse(stored);
-      if (!Array.isArray(parsed)) return [];
-      return parsed.filter(item =>
-        item && typeof item.id === 'number' &&
-        typeof item.price === 'number' &&
-        typeof item.qty === 'number' && item.qty > 0
+    function updateTimer() {
+      const remaining = Math.max(
+        0,
+        Number(endTime) - Date.now()
       );
-    } catch (error) {
-      console.error('Errore nel caricamento del carrello:', error);
-      return [];
-    }
-  }
 
-  function saveCartToStorage() {
-    try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-    } catch (error) {
-      console.error('Errore nel salvataggio del carrello:', error);
-      showToast('⚠️ Impossibile salvare il carrello', '#ef4444');
-    }
-  }
+      const minutes = Math.floor(remaining / 60000);
+      const seconds = Math.floor((remaining % 60000) / 1000);
 
-  /* ============================================
-     RENDER CATEGORIE
-     ============================================ */
-  function renderCategories() {
-    const list = document.getElementById('categoriesList');
-    list.innerHTML = categories.map(cat => {
-      const count = cat.id === 'all'
-        ? products.length
-        : products.filter(p => p.category === cat.id).length;
+      document.getElementById("timer").textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
 
-      return `
-        <button class="category-btn ${activeCategory === cat.id ? 'active' : ''}"
-                onclick="selectCategory('${cat.id}')">
-          ${cat.emoji} ${cat.name}
-          <span class="count">${count}</span>
-        </button>
-      `;
-    }).join('');
-  }
-
-  /* ============================================
-     SELEZIONE CATEGORIA
-     ============================================ */
-  function selectCategory(categoryId) {
-    activeCategory = categoryId;
-    renderCategories();
-    renderProducts();
-    document.getElementById('prodotti').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function showHome() {
-    activeCategory = 'all';
-    renderCategories();
-    renderProducts();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  /* ============================================
-     RENDER PRODOTTI
-     ============================================ */
-  function revealProductCards() {
-    const cards = document.querySelectorAll('#productList .product-card:not(.is-visible)');
-    if (!('IntersectionObserver' in window)) {
-      cards.forEach(card => card.classList.add('is-visible'));
-      return;
-    }
-    const observer = new IntersectionObserver((entries, currentObserver) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const card = entry.target;
-          const index = Array.from(card.parentElement.children).indexOf(card);
-          card.style.transitionDelay = `${(index % 4) * 90}ms`;
-          card.classList.add('is-visible');
-          currentObserver.unobserve(card);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -35px 0px' });
-
-    cards.forEach(card => observer.observe(card));
-  }
-
-  function renderProducts() {
-    const list = document.getElementById('productList');
-    const titleEl = document.getElementById('sectionTitle');
-    const seeAllBtn = document.getElementById('seeAllBtn');
-
-    let productsToShow = [];
-
-    if (activeCategory === 'all') {
-      categories.forEach(cat => {
-        if (cat.id === 'all') return;
-        const catProducts = products
-          .filter(p => p.category === cat.id)
-          .slice(0, PRODUCTS_PER_CATEGORY_HOME);
-        productsToShow.push(...catProducts);
-      });
-
-      titleEl.innerHTML = 'I Nostri <span>Prodotti</span>';
-      seeAllBtn.style.display = 'none';
-    } else {
-      productsToShow = products.filter(p => p.category === activeCategory);
-      const catName = categories.find(c => c.id === activeCategory)?.name || '';
-      titleEl.innerHTML = `${catName} <span>(${productsToShow.length} prodotti)</span>`;
-      seeAllBtn.style.display = 'inline-block';
-    }
-
-    if (productsToShow.length === 0) {
-      list.innerHTML = '<div class="no-products">Nessun prodotto trovato in questa categoria.</div>';
-      return;
-    }
-
-    list.innerHTML = productsToShow.map(p => {
-      const catName = categories.find(c => c.id === p.category)?.name || '';
-      return `
-        <div class="product-card">
-          <div class="product-img" onclick="openProductModal(${p.id})">
-            <img src="${p.image}" alt="${p.name}" loading="lazy">
-            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
-          </div>
-          <div class="product-info">
-            <div class="product-category">${catName}</div>
-            <h3 onclick="openProductModal(${p.id})">${p.name}</h3>
-            <p>${p.desc}</p>
-            <div class="product-price">€${p.price.toFixed(2)}</div>
-            <button class="add-btn" onclick="addToCart(${p.id})">Aggiungi al Carrello</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-    revealProductCards();
-  }
-
-  /* ============================================
-     GESTIONE CARRELLO
-     ============================================ */
-  function addToCart(id) {
-    const product = products.find(p => p.id === id);
-    if (!product) return;
-
-    const existing = cart.find(item => item.id === id);
-    if (existing) {
-      existing.qty++;
-    } else {
-      cart.push({ ...product, qty: 1 });
-    }
-
-    saveCartToStorage();
-    updateCart();
-    showToast(`${product.name} aggiunto ✓`);
-  }
-
-  function increaseQty(id) {
-    const item = cart.find(i => i.id === id);
-    if (item) {
-      item.qty++;
-      saveCartToStorage();
-      updateCart();
-    }
-  }
-
-  function decreaseQty(id) {
-    const item = cart.find(i => i.id === id);
-    if (item) {
-      item.qty--;
-      if (item.qty <= 0) {
-        removeFromCart(id);
-        return;
+      if (remaining <= 0) {
+        clearInterval(interval);
       }
-      saveCartToStorage();
-      updateCart();
-    }
-  }
-
-  function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
-    saveCartToStorage();
-    updateCart();
-  }
-
-  function clearCart() {
-    if (cart.length === 0) return;
-    if (!confirm('Sei sicuro di voler svuotare il carrello?')) return;
-    cart = [];
-    saveCartToStorage();
-    updateCart();
-    showToast('Carrello svuotato', '#ef4444');
-  }
-
-  /* ============================================
-     UI CARRELLO
-     ============================================ */
-  function updateCart() {
-    const itemsEl = document.getElementById('cartItems');
-    const countEl = document.getElementById('cartCount');
-    const totalEl = document.getElementById('cartTotal');
-
-    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-    const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
-    countEl.textContent = totalQty;
-    totalEl.textContent = `€${totalPrice.toFixed(2)}`;
-
-    if (cart.length === 0) {
-      itemsEl.innerHTML = '<p class="empty-cart">Il carrello è vuoto 🛍️</p>';
-      return;
     }
 
-    itemsEl.innerHTML = cart.map(item => `
-      <div class="cart-item">
-        <div class="cart-item-img">
-          <img src="${item.image}" alt="${item.name}">
-        </div>
-        <div class="cart-item-info">
-          <h4>${item.name}</h4>
-          <div class="price">€${(item.price * item.qty).toFixed(2)}</div>
-          <div class="qty-controls">
-            <button class="qty-btn" onclick="decreaseQty(${item.id})">−</button>
-            <span class="qty-value">${item.qty}</span>
-            <button class="qty-btn" onclick="increaseQty(${item.id})">+</button>
-          </div>
-        </div>
-        <button class="remove-btn" onclick="removeFromCart(${item.id})" title="Rimuovi">🗑️</button>
-      </div>
-    `).join('');
-  }
+    updateTimer();
 
-  function toggleCart() {
-    document.getElementById('cartSidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('active');
-  }
-
-  /* ============================================
-     TOAST
-     ============================================ */
-  let toastTimeout;
-  function showToast(message, color = '#10b981') {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.style.background = color;
-    toast.classList.add('show');
-    clearTimeout(toastTimeout);
-    toastTimeout = setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2000);
-  }
-
-  /* ============================================
-     CHECKOUT
-     ============================================ */
-  function checkout() {
-    if (cart.length === 0) {
-      showToast('Il carrello è vuoto!', '#ef4444');
-      return;
-    }
-
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
-    alert(`Per confermare il tuo ordine\nTotale: €${total.toFixed(2)}\nManda uno screenshot del tuo carrello su Instagram`);
-  }
-
-  /* ============================================
-     MODAL PRODOTTO
-     ============================================ */
-  let currentProductId = null;
-  let modalQty = 1;
-
-  function openProductModal(id) {
-    const product = products.find(p => p.id === id);
-    if (!product) return;
-
-    currentProductId = id;
-    modalQty = 1;
-
-    const catName = categories.find(c => c.id === product.category)?.name || '';
-
-    document.getElementById('modalImg').src = product.image;
-    document.getElementById('modalImg').alt = product.name;
-    document.getElementById('modalCategory').textContent = catName;
-    document.getElementById('modalName').textContent = product.name;
-    document.getElementById('modalDesc').textContent = product.desc || 'Nessuna descrizione disponibile.';
-    document.getElementById('modalQtyValue').textContent = '1';
-
-    // Aggiorna il prezzo iniziale
-    updateModalPrice();
-
-    const badgeEl = document.getElementById('modalBadge');
-    badgeEl.innerHTML = product.badge
-      ? `<span class="modal-badge">${product.badge}</span>`
-      : '';
-
-    document.getElementById('productModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeProductModal() {
-    document.getElementById('productModal').classList.remove('active');
-    document.body.style.overflow = '';
-    currentProductId = null;
-  }
-
-  function changeModalQty(delta) {
-    modalQty = Math.max(1, modalQty + delta);
-    document.getElementById('modalQtyValue').textContent = modalQty;
-    updateModalPrice();
-  }
-
-  function updateModalPrice() {
-    if (currentProductId === null) return;
-    const product = products.find(p => p.id === currentProductId);
-    if (!product) return;
-
-    const total = product.price * modalQty;
-    const priceEl = document.getElementById('modalPrice');
-    const unitEl = document.getElementById('modalUnitPrice');
-
-    priceEl.textContent = `€${total.toFixed(2)}`;
-
-    // Mostra il prezzo unitario solo se quantità > 1
-    unitEl.textContent = modalQty > 1
-      ? `€${product.price.toFixed(2)} cad.`
-      : '';
-
-    // Animazione "flash" sul cambio prezzo
-    const container = document.getElementById('modalPriceContainer');
-    container.classList.remove('updated');
-    void container.offsetWidth; // forza reflow per riavviare l'animazione
-    container.classList.add('updated');
-  }
-
-  function addFromModal() {
-    if (currentProductId === null) return;
-    const product = products.find(p => p.id === currentProductId);
-    if (!product) return;
-
-    const existing = cart.find(item => item.id === currentProductId);
-    if (existing) {
-      existing.qty += modalQty;
-    } else {
-      cart.push({ ...product, qty: modalQty });
-    }
-
-    saveCartToStorage();
-    updateCart();
-    showToast(`${product.name} ×${modalQty} aggiunto ✓`);
-    closeProductModal();
-  }
-
-  /* Chiudi modal con ESC */
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeProductModal();
-  });
-
-  /* ============================================
-     SINCRONIZZAZIONE TAB
-     ============================================ */
-  window.addEventListener('storage', (event) => {
-    if (event.key === CART_STORAGE_KEY) {
-      cart = loadCartFromStorage();
-      updateCart();
-    }
-  });
-
-  /* ============================================
-     INIT
-     ============================================ */
-  renderCategories();
-  renderProducts();
-  updateCart();
-  requestAnimationFrame(() => document.body.classList.add('is-loaded'));
-</script>
+    const interval = setInterval(updateTimer, 1000);
+  </script>
 
 </body>
 </html>
