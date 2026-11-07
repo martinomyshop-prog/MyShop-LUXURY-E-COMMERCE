@@ -126,6 +126,7 @@
     cursor: pointer; transition: all .25s;
   }
   .see-all-btn:hover { background: var(--gold); color: white; }
+  .section-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
   .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem 1.35rem; }
   .product-card {
     background: var(--paper); border: 1px solid rgba(173,137,84,.12); overflow: hidden;
@@ -334,7 +335,10 @@
 <main class="container" id="prodotti">
   <div class="section-header">
     <h2 class="section-title" id="sectionTitle">I Nostri <span>Prodotti</span></h2>
-    <button class="see-all-btn" id="seeAllBtn" onclick="showHome()" style="display:none;">← Torna alla Home</button>
+    <div class="section-actions">
+      <button class="see-all-btn" id="backToOwnersBtn" onclick="showAllEmails()" style="display:none;">← Torna agli intestatari</button>
+      <button class="see-all-btn" id="seeAllBtn" onclick="showHome()" style="display:none;">← Torna alla Home</button>
+    </div>
   </div>
   <div class="products" id="productList"></div>
 </main>
@@ -526,11 +530,11 @@
 	{ id: 81, 	 name: "Investimenti monitorati", 			desc: 'Per maggiori informazioni clicca <a href="https://shorturl.at/peAg8">qui</a>', 		price: 0.00, 		category: "servizi", 		badge: "", 		image: "immagini/servizi/bitcoin.jpg" },
 	
 	/* ==== E-MAIL ==== */
-	{ id: 82, 	 name: "10 email gmail Massimo Rossi valide", 			desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/Tt5AP">qui</a>', 		price: 5.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	{ id: 83, 	 name: "20 email gmail Massimo Rossi valide", 			desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/1efKW">qui</a>', 		price: 10.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	{ id: 84, 	 name: "30 email gmail Massimo Rossi valide", 			desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/iZH5n">qui</a>', 		price: 15.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	{ id: 85, 	 name: "40 email gmail Massimo Rossi valide", 			desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/iK0pC">qui</a>', 		price: 20.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
-	{ id: 86, 	 name: "10 email gmail Alessandro Rossi valide", 		desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/sXQF5">qui</a>', 		price: 5.00, 		category: "e-mail", 		badge: "", 		image: "immagini/email/gmail.png" },
+	{ id: 82, owner: "Massimo Rossi",     name: "10 email gmail Massimo Rossi valide", desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/Tt5AP">qui</a>', price: 5.00,  category: "e-mail", badge: "", image: "immagini/email/gmail.png" },
+	{ id: 83, owner: "Massimo Rossi",     name: "20 email gmail Massimo Rossi valide", desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/1efKW">qui</a>', price: 10.00, category: "e-mail", badge: "", image: "immagini/email/gmail.png" },
+	{ id: 84, owner: "Massimo Rossi",     name: "30 email gmail Massimo Rossi valide", desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/iZH5n">qui</a>', price: 15.00, category: "e-mail", badge: "", image: "immagini/email/gmail.png" },
+	{ id: 85, owner: "Massimo Rossi",     name: "40 email gmail Massimo Rossi valide", desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/iK0pC">qui</a>', price: 20.00, category: "e-mail", badge: "", image: "immagini/email/gmail.png" },
+	{ id: 86, owner: "Alessandro Rossi",  name: "10 email gmail Alessandro Rossi valide", desc: 'per maggiori informazioni clicca <a href="https://shorturl.at/sXQF5">qui</a>', price: 5.00,  category: "e-mail", badge: "", image: "immagini/email/gmail.png" },
 	
 	/* ==== PRESTITI BANCARI ==== */
 	{ id: 87, 	 name: "Prestito bancario 1000 euro", 		desc: "", 		price: 100.00, 		category: "prestiti bancari", 		badge: "", 		image: "immagini/prestiti bancari/dollari.jpg" },
@@ -557,26 +561,26 @@
 	{ id: 106, 	 name: "Chiavetta USB SANDISK Ultra 32 GB USB-C", 		desc: "", 		price: 20.00, 		category: "elettronica", 		badge: "", 		image: "immagini/chiavetta USB/4.jpg" },
 	
 	/* ==== BIBITE ==== */
-	{ id: 103, 	 name: "Terme di Crodo LemonSoda", 			desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/lemonsoda.webp" },
-	{ id: 104, 	 name: "Terme di Crodo OranSoda", 			desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/oransoda.webp" },
-	{ id: 105, 	 name: "Terme di Crodo Soda Mojito", 		desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/mojito.webp" },
-	{ id: 106, 	 name: "Paulaner · Spezi", 					desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/paulanear.webp" },
-	{ id: 107, 	 name: "Gazzosa moscato", 					desc: "275 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/gazzosa moscato.webp" },
-	{ id: 108, 	 name: "Gazzosa mandarino", 				desc: "275 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/gazzosa mandarino.webp" },
-	{ id: 109, 	 name: "Pepita Pompelmo", 					desc: "1.5L", 			price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/pepita.webp" },
-	{ id: 110, 	 name: "Fanta Mango", 						desc: "500 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta mango.webp" },
-	{ id: 111, 	 name: "Fanta Exotic", 						desc: "500 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta exotic.webp" },
-	{ id: 112, 	 name: "Fanta Orange", 						desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta.webp" },
+	{ id: 107, 	 name: "Terme di Crodo LemonSoda", 			desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/lemonsoda.webp" },
+	{ id: 108, 	 name: "Terme di Crodo OranSoda", 			desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/oransoda.webp" },
+	{ id: 109, 	 name: "Terme di Crodo Soda Mojito", 		desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/mojito.webp" },
+	{ id: 110, 	 name: "Paulaner · Spezi", 					desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/paulanear.webp" },
+	{ id: 111, 	 name: "Gazzosa moscato", 					desc: "275 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/gazzosa moscato.webp" },
+	{ id: 112, 	 name: "Gazzosa mandarino", 				desc: "275 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/gazzosa mandarino.webp" },
+	{ id: 113, 	 name: "Pepita Pompelmo", 					desc: "1.5L", 			price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/pepita.webp" },
+	{ id: 114, 	 name: "Fanta Mango", 						desc: "500 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta mango.webp" },
+	{ id: 115, 	 name: "Fanta Exotic", 						desc: "500 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta exotic.webp" },
+	{ id: 116, 	 name: "Fanta Orange", 						desc: "330 ml", 		price: 2.00, 		category: "bibite", 		badge: "", 		image: "immagini/bibite/fanta.webp" },
 	
 	/* ==== OROLOGI ==== */
-	{ id: 113, 	 name: "PD-1662", 				desc: "", 		price: 140.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/1.webp" },
-	{ id: 114, 	 name: "PD-1662", 				desc: "", 		price: 140.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/2.webp" },
-	{ id: 115, 	 name: "PD-1662", 				desc: "", 		price: 140.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/3.webp" },
-	{ id: 116, 	 name: "PD-1662", 				desc: "", 		price: 140.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/4.webp" },
-	{ id: 117, 	 name: "PD-1662 GMT NH34", 		desc: "", 		price: 305.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/5.webp" },
-	{ id: 118, 	 name: "PD-1728", 				desc: "", 		price: 143.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/6.webp" },
-	{ id: 119, 	 name: "PD-1728", 				desc: "", 		price: 143.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/7.webp" },
-	{ id: 120, 	 name: "PD-1728", 				desc: "", 		price: 143.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/8.webp" }
+	{ id: 117, 	 name: "PD-1662", 				desc: "", 		price: 140.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/1.webp" },
+	{ id: 118, 	 name: "PD-1662", 				desc: "", 		price: 140.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/2.webp" },
+	{ id: 119, 	 name: "PD-1662", 				desc: "", 		price: 140.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/3.webp" },
+	{ id: 120, 	 name: "PD-1662", 				desc: "", 		price: 140.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/4.webp" },
+	{ id: 121, 	 name: "PD-1662 GMT NH34", 		desc: "", 		price: 305.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/5.webp" },
+	{ id: 122, 	 name: "PD-1728", 				desc: "", 		price: 143.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/6.webp" },
+	{ id: 123, 	 name: "PD-1728", 				desc: "", 		price: 143.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/7.webp" },
+	{ id: 124, 	 name: "PD-1728", 				desc: "", 		price: 143.00, 		category: "orologi", 		badge: "", 		image: "immagini/pagani design/8.webp" }
 	];
 
   /* ============================================
@@ -584,6 +588,7 @@
      ============================================ */
   let cart = loadCartFromStorage();
   let activeCategory = 'all';
+  let activeEmailOwner = null;
 
   /* ============================================
      LOCALSTORAGE
@@ -639,13 +644,27 @@
      ============================================ */
   function selectCategory(categoryId) {
     activeCategory = categoryId;
+    activeEmailOwner = null;
     renderCategories();
+    renderProducts();
+    document.getElementById('prodotti').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function selectEmailOwner(owner) {
+    activeEmailOwner = owner;
+    renderProducts();
+    document.getElementById('prodotti').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showAllEmails() {
+    activeEmailOwner = null;
     renderProducts();
     document.getElementById('prodotti').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function showHome() {
     activeCategory = 'all';
+    activeEmailOwner = null;
     renderCategories();
     renderProducts();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -679,6 +698,10 @@
     const list = document.getElementById('productList');
     const titleEl = document.getElementById('sectionTitle');
     const seeAllBtn = document.getElementById('seeAllBtn');
+    const backToOwnersBtn = document.getElementById('backToOwnersBtn');
+
+    // Reset visibilità pulsanti
+    backToOwnersBtn.style.display = 'none';
 
     let productsToShow = [];
 
@@ -693,6 +716,48 @@
 
       titleEl.innerHTML = 'I Nostri <span>Prodotti</span>';
       seeAllBtn.style.display = 'none';
+    } else if (activeCategory === 'e-mail' && activeEmailOwner === null) {
+      // Mostra la lista degli intestatari delle email
+      const emailProducts = products.filter(p => p.category === 'e-mail');
+      const owners = [...new Set(emailProducts.map(p => p.owner).filter(Boolean))];
+
+      titleEl.innerHTML = `E-mail <span>— scegli un intestatario</span>`;
+      seeAllBtn.style.display = 'inline-block';
+
+      if (owners.length === 0) {
+        list.innerHTML = '<div class="no-products">Nessun intestatario trovato.</div>';
+        return;
+      }
+
+      list.innerHTML = owners.map(owner => {
+        const count = emailProducts.filter(p => p.owner === owner).length;
+        const safeOwner = owner.replace(/'/g, "\\'");
+        return `
+          <div class="product-card" onclick="selectEmailOwner('${safeOwner}')" style="cursor:pointer;">
+            <div class="product-img" style="display:flex;align-items:center;justify-content:center;background:var(--ivory);">
+              <div style="text-align:center;padding:1rem;">
+                <div style="font-size:3rem;line-height:1;">📧</div>
+                <div style="margin-top:.8rem;font-family:Georgia,serif;font-size:1.2rem;color:var(--ink);">${owner}</div>
+                <div style="margin-top:.4rem;font-size:.75rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;">${count} pacchetti</div>
+              </div>
+            </div>
+            <div class="product-info">
+              <div class="product-category">Intestatario</div>
+              <h3>${owner}</h3>
+              <p>Visualizza tutti i pacchetti email disponibili per questo intestatario.</p>
+              <button class="add-btn" onclick="event.stopPropagation(); selectEmailOwner('${safeOwner}')">Vedi Email</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      revealProductCards();
+      return;
+    } else if (activeCategory === 'e-mail' && activeEmailOwner !== null) {
+      // Mostra i prodotti email dell'intestatario selezionato
+      productsToShow = products.filter(p => p.category === 'e-mail' && p.owner === activeEmailOwner);
+      titleEl.innerHTML = `${activeEmailOwner} <span>(${productsToShow.length} prodotti)</span>`;
+      seeAllBtn.style.display = 'inline-block';
+      backToOwnersBtn.style.display = 'inline-block';
     } else {
       productsToShow = products.filter(p => p.category === activeCategory);
       const catName = categories.find(c => c.id === activeCategory)?.name || '';
